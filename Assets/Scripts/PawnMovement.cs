@@ -6,7 +6,7 @@ public class PawnMovement : MonoBehaviour
 {
     public Route currentRoute;
 
-    int routePos;
+    public int routePos;
     public int steps;
     bool isMoving;
 
@@ -14,22 +14,15 @@ public class PawnMovement : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Return) && !isMoving)
         {
-            steps = Random.Range(1, 7);
-            Debug.Log("Rolled " + steps);
-
-            if (routePos + steps < currentRoute.children.Count)
-            {
-                StartCoroutine(Move());
-            }
-            else
-            {
-                steps -= currentRoute.children.Count;
-            }
+            steps = Random.Range(1, 2);
+            //Debug.Log("Rolled " + steps);
+            StartCoroutine(Move());
         }
     }
 
     IEnumerator Move()
     {
+        Vector3 nextPos;
         if (isMoving)
         {
             yield break;
@@ -38,7 +31,18 @@ public class PawnMovement : MonoBehaviour
 
         while(steps > 0)
         {
-            Vector3 nextPos = currentRoute.children[routePos + 1].position;
+            if(routePos + 1 < currentRoute.children.Count)
+            {
+                nextPos = currentRoute.children[routePos + 1].position;
+                Debug.Log(routePos);
+            }
+            else
+            {
+                routePos = -1;
+                nextPos = currentRoute.children[0].position;
+                
+            }
+            
             while (MoveToNextNode(nextPos)){ yield return null;}
 
             yield return new WaitForSeconds(0.1f);
@@ -60,7 +64,7 @@ public class PawnMovement : MonoBehaviour
             transform.position = Vector3.MoveTowards(
                 transform.position, 
                 new Vector3(target.x, transform.position.y, target.z), 
-                2f * Time.deltaTime)
+                6f * Time.deltaTime)
         );
         
     }

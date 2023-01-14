@@ -20,7 +20,14 @@ public class Route : MonoBehaviour
                 Vector3 prevNode = children[i-1].position;
                 Gizmos.DrawLine(prevNode, currentNode);
             }
+
+            if(i == children.Count - 1)
+            {
+                Vector3 nextNode = children[0].position;
+                Gizmos.DrawLine(currentNode, nextNode);
+            }
         }
+
     }
 
     void FillNodes()
