@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class Dice : MonoBehaviour
     public int diceValue;
     public DiceSide[] diceSides;
     Vector3 initPos;
-    bool grounded;
+    public bool active;
 
     private void Start()
     {
@@ -20,32 +21,46 @@ public class Dice : MonoBehaviour
 
     private void Update()
     {
-        if(rb.velocity.x == 0 && rb.velocity.y == 0 && rb.velocity.z == 0){
-            grounded = true;
+        if (isActive())
+        {
+            diceValue = 0;
+        }
+        else
+        {
             SideValueCheck();
-        }else{
-            grounded = false;
         }
 
-        if (Input.GetMouseButtonDown(0)){
-            RollDice();
-        }else if (Input.GetKeyDown(KeyCode.Space)){
-            Reset();
+    }
+
+    public bool isActive()
+    {
+        if (rb.velocity.x == 0 && rb.velocity.y == 0 && rb.velocity.z == 0)
+        {
+            active = false;
+            return false;
+        }
+        else
+        {
+            active = true;
+            return true;
         }
     }
 
-    void RollDice()
+    public void RollDice()
     {
-        if(grounded)
+        if (!active)
         {
+            diceValue= 0;
+            active = true;
+
             int dirX = Random.Range(-1000, 1000);
             int dirY = Random.Range(-1000, 1000);
 
             transform.position = initPos;
             transform.rotation = Quaternion.identity;
-            
+
             rb.AddForce(transform.up * 500);
-   
+
             rb.AddTorque(transform.right * dirX);
             rb.AddTorque(transform.up * dirY);
         }
@@ -63,7 +78,7 @@ public class Dice : MonoBehaviour
         transform.position = initPos;
     }
 
-    void SideValueCheck()
+    public void SideValueCheck()
     {
         diceValue = 0;
         foreach (DiceSide side in diceSides)
@@ -71,8 +86,8 @@ public class Dice : MonoBehaviour
             if (side.OnGround())
             {
                 diceValue = side.value;
-              //  print(diceValue + " has been rolled");
             }
         }
     }
+
 }

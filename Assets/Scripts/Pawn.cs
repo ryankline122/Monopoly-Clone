@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PawnMovement : MonoBehaviour
+public class Pawn : MonoBehaviour
 {
     public Route currentRoute;
+    public Rigidbody rb;
 
-    public int routePos;
+    int routePos;
     public int steps;
     bool isMoving;
 
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Return) && !isMoving)
+        if (steps != 0)
         {
-            steps = Random.Range(1, 2);
-            //Debug.Log("Rolled " + steps);
             StartCoroutine(Move());
         }
     }
 
-    IEnumerator Move()
+    public IEnumerator Move()
     {
         Vector3 nextPos;
         if (isMoving)
@@ -34,7 +39,6 @@ public class PawnMovement : MonoBehaviour
             if(routePos + 1 < currentRoute.children.Count)
             {
                 nextPos = currentRoute.children[routePos + 1].position;
-                Debug.Log(routePos);
             }
             else
             {
