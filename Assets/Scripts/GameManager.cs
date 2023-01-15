@@ -1,35 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public Dice[] dice;
     public Pawn[] pawns;
+    public Pawn currentPlayer;
+    public Button rollButton;
 
-    private Pawn currentPlayer;
+    bool isRolling;
+
+    private void Start()
+    {
+        isRolling= false;
+    }
 
     private void Update()
     {
-        currentPlayer = pawns[0];
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            TakeTurn(currentPlayer);
-        }
+        
     }
 
 
-    void TakeTurn(Pawn player)
+    public void TakeTurn(Pawn player)
     {
-        currentPlayer = player;
-        
+        rollButton.interactable = true;
 
-        foreach(Dice die in dice) 
+        if (!isRolling) 
         {
-            die.RollDice();
+            rollButton.interactable= false;
+            isRolling = true;
+            currentPlayer = player;
+
+            foreach (Dice die in dice)
+            {
+                die.RollDice();
+            }
+            StartCoroutine(WaitForNewDiceVal(6));
         }
-        StartCoroutine(WaitForNewDiceVal(6));
+        
     }
 
     IEnumerator WaitForNewDiceVal(int seconds)
@@ -43,9 +53,9 @@ public class GameManager : MonoBehaviour
             steps += die.diceValue;
         }
 
-        //pawns[0].steps= steps;
         Debug.Log("Steps = " + steps);
         currentPlayer.steps= steps;
+        isRolling= false;
     }
 
 }

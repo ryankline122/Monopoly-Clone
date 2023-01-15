@@ -59,9 +59,6 @@ public class Pawn : MonoBehaviour
 
     bool MoveToNextNode(Vector3 target)
     {
-        //Debug.Log("Target = " + target);
-        //Debug.Log("Current = " + transform.position);
-
         target.y = transform.position.y;
 
         return target != (
